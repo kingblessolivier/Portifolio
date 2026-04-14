@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import Navbar from './components/Navbar'
-import MouseGlow from './components/MouseGlow'
 import ChatbotWidget from './components/ChatbotWidget'
 import SectionConnector from './components/SectionConnector'
 import ScrollProgress from './components/ScrollProgress'
@@ -18,10 +17,7 @@ import { labels, uiContent } from './assets/data'
 
 function getInitialTheme() {
   const stored = localStorage.getItem('theme')
-  if (stored === 'light' || stored === 'dark') {
-    return stored
-  }
-
+  if (stored === 'light' || stored === 'dark') return stored
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
@@ -37,18 +33,19 @@ export default function App() {
     localStorage.setItem('theme', theme)
   }, [theme])
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
-  }
+  const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
       <ScrollProgress />
-      <MouseGlow />
 
+      {/* ── Ambient background orbs (fixed, full-page) ── */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -left-32 top-16 h-72 w-72 rounded-full bg-[color:color-mix(in_srgb,var(--accent)_14%,transparent)] blur-3xl" />
-        <div className="absolute -right-20 top-52 h-72 w-72 rounded-full bg-[color:color-mix(in_srgb,var(--accent-purple)_14%,transparent)] blur-3xl" />
+        <div className="orb-float-1 absolute -left-32 top-16 h-96 w-96 rounded-full bg-[color:color-mix(in_srgb,var(--accent)_8%,transparent)] blur-3xl" />
+        <div className="orb-float-2 absolute -right-20 top-48 h-96 w-96 rounded-full bg-[color:color-mix(in_srgb,var(--accent-purple)_8%,transparent)] blur-3xl" />
+        <div className="orb-float-3 absolute left-1/4 top-[42vh] h-72 w-72 rounded-full bg-[color:color-mix(in_srgb,#10b981_5%,transparent)] blur-3xl" />
+        <div className="orb-float-4 absolute right-1/4 top-[66vh] h-64 w-64 rounded-full bg-[color:color-mix(in_srgb,var(--accent)_6%,transparent)] blur-3xl" />
+        <div className="orb-float-1 absolute -bottom-24 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-[color:color-mix(in_srgb,var(--accent-purple)_7%,transparent)] blur-3xl" />
       </div>
 
       <Navbar
@@ -66,13 +63,13 @@ export default function App() {
         <SectionConnector />
         <ProjectsSection navLabels={navLabels} language={language} sectionText={sectionText} />
         <SectionConnector />
-        <SystemDesignSection sectionText={sectionText} />
+        <SystemDesignSection sectionText={sectionText} language={language} />
         <SectionConnector />
         <SkillsSection navLabels={navLabels} sectionText={sectionText} />
         <SectionConnector />
-        <AwardsSection navLabels={navLabels} sectionText={sectionText} />
+        <AwardsSection navLabels={navLabels} sectionText={sectionText} language={language} />
         <SectionConnector />
-        <GallerySection navLabels={navLabels} sectionText={sectionText} />
+        <GallerySection navLabels={navLabels} sectionText={sectionText} language={language} />
         <SectionConnector />
         <WorkExperienceSection language={language} sectionText={sectionText} />
         <SectionConnector />

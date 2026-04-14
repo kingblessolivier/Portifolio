@@ -5,7 +5,7 @@ import { HiXMark } from 'react-icons/hi2'
 import SectionReveal from '../components/SectionReveal'
 import { galleryImages } from '../assets/data'
 
-export default function GallerySection({ navLabels, sectionText }) {
+export default function GallerySection({ navLabels, sectionText, language }) {
   const [activeImage, setActiveImage] = useState(null)
   const [activeCategory, setActiveCategory] = useState('All')
 
@@ -56,7 +56,7 @@ export default function GallerySection({ navLabels, sectionText }) {
                 className="aspect-[4/3] w-full cursor-zoom-in object-cover transition duration-300 hover:scale-110"
               />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-3">
-                <p className="text-xs font-semibold text-white">{item.title}</p>
+                <p className="text-xs font-semibold text-white">{item.title[language] ?? item.title.EN}</p>
                 <div className="mt-1 flex items-center justify-between">
                   <span className="rounded-full border border-white/35 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/85">
                     {categoryLabels[item.category]}

@@ -25,11 +25,17 @@ const i18n = {
       projectsLabel: 'Projects',
       systemsLabel: 'Systems Built',
       certificatesLabel: 'Certificates',
+      headline: 'I engineer intelligent, scalable software systems that solve real-world problems.',
+      availableForWork: 'Available for work',
     },
     about: {
       sectionTag: 'Personal Story',
       signatureTag: 'Signature Philosophy',
       journeyTitle: 'Journey',
+      trait1: 'Outcome-driven engineering',
+      trait2: 'System clarity and scalability',
+      trait3: 'Clean, human-centered interfaces',
+      fullStackLabel: 'Full-Stack Engineer',
     },
     projects: {
       sectionTag: 'Case Studies',
@@ -54,6 +60,9 @@ const i18n = {
       flowTitle: 'System Flow',
       stepLabel: 'Step',
       flow: ['Client Request', 'API Gateway', 'Service Layer', 'Data + Models', 'Insights Returned'],
+      frontendItems: ['React UI', 'Routing', 'State + Form UX', 'Client-side validation'],
+      backendItems: ['Django REST APIs', 'Auth & RBAC', 'Business logic services', 'Async workers'],
+      dataItems: ['PostgreSQL/MySQL', 'Feature extraction', 'Model inference', 'Monitoring insights'],
     },
     work: {
       sectionTag: 'Professional Background',
@@ -84,6 +93,7 @@ const i18n = {
       },
     },
     contact: {
+      sectionTag: 'Get In Touch',
       directTitle: 'Direct Contact',
       profilesLabel: 'Profiles',
       name: 'Name',
@@ -129,11 +139,17 @@ const i18n = {
       projectsLabel: 'Imishinga',
       systemsLabel: 'Sisitemu Zubatswe',
       certificatesLabel: 'Impamyabushobozi',
+      headline: 'Ndubaka sisitemu za software zifite ubwenge, zishobora kwaguka, kandi zigatunga ibibazo by isi ya none.',
+      availableForWork: 'Nzakorera ubukozi',
     },
     about: {
       sectionTag: 'Inkuru Yanjye',
       signatureTag: 'Uko Nkora',
       journeyTitle: 'Urugendo',
+      trait1: 'Ubuhanga bushingiye ku bisubizo',
+      trait2: 'Sisitemu isobanutse kandi ishobora kwaguka',
+      trait3: 'Interface nziza ishingiye ku muntu',
+      fullStackLabel: 'Injeniyeri ya Full-Stack',
     },
     projects: {
       sectionTag: 'Inyigo z Imishinga',
@@ -158,6 +174,9 @@ const i18n = {
       flowTitle: 'Uruhererekane rwa Sisitemu',
       stepLabel: 'Intambwe',
       flow: ['Ubusabe bw Umukoresha', 'API Gateway', 'Service Layer', 'Data na Models', 'Igisubizo gisubira ku Mukoresha'],
+      frontendItems: ['React UI', 'Routing', 'State + Form UX', 'Kugenzura ku ruhande rw umukoresha'],
+      backendItems: ['Django REST APIs', 'Auth & RBAC', 'Serivisi za Logic y Ubucuruzi', 'Abakozi ba Async'],
+      dataItems: ['PostgreSQL/MySQL', 'Gukuramo ibimenyetso', 'Gushyira Model mu bikorwa', 'Isesengura ryo kugenzura'],
     },
     work: {
       sectionTag: 'Amateka y Umwuga',
@@ -188,6 +207,7 @@ const i18n = {
       },
     },
     contact: {
+      sectionTag: 'Twandikire',
       directTitle: 'Aho Wanyandikira',
       profilesLabel: 'Imiyoboro',
       name: 'Amazina',
@@ -233,11 +253,17 @@ const i18n = {
       projectsLabel: 'Projets',
       systemsLabel: 'Systemes Construits',
       certificatesLabel: 'Certificats',
+      headline: 'Je concois des systemes logiciels intelligents et evolutifs qui resolvent des problemes concrets.',
+      availableForWork: 'Disponible pour travailler',
     },
     about: {
       sectionTag: 'Mon Parcours',
       signatureTag: 'Philosophie',
       journeyTitle: 'Parcours',
+      trait1: 'Ingenierie orientee resultats',
+      trait2: 'Clarte et evolutivite des systemes',
+      trait3: 'Interfaces propres centrees sur l utilisateur',
+      fullStackLabel: 'Ingenieur Full-Stack',
     },
     projects: {
       sectionTag: 'Etudes de Cas',
@@ -262,6 +288,9 @@ const i18n = {
       flowTitle: 'Flux Systeme',
       stepLabel: 'Etape',
       flow: ['Requete Client', 'API Gateway', 'Service Layer', 'Data et Modeles', 'Insights Retournes'],
+      frontendItems: ['React UI', 'Routing', 'Etat + UX de Formulaire', 'Validation cote client'],
+      backendItems: ['APIs REST Django', 'Auth & RBAC', 'Services de logique metier', 'Workers asynchrones'],
+      dataItems: ['PostgreSQL/MySQL', 'Extraction de features', 'Inference de modele', 'Insights de monitoring'],
     },
     work: {
       sectionTag: 'Parcours Professionnel',
@@ -292,6 +321,7 @@ const i18n = {
       },
     },
     contact: {
+      sectionTag: 'Me Contacter',
       directTitle: 'Contact Direct',
       profilesLabel: 'Profils',
       name: 'Nom',
@@ -469,38 +499,86 @@ export const portfolioData = {
   ],
   achievements: [
     {
-      title: 'HATANA Hackathon - University of Rwanda',
-      description: 'Participated with team in HATANA hackathon organized by Mastercard and won a prize with MedLink.',
+      title: {
+        EN: 'HATANA Hackathon - University of Rwanda',
+        KINY: 'HATANA Hackathon - Kaminuza y u Rwanda',
+        FR: 'Hackathon HATANA - Universite du Rwanda',
+      },
+      description: {
+        EN: 'Participated with team in HATANA hackathon organized by Mastercard and won a prize with MedLink.',
+        KINY: 'Twafatanije muri HATANA hackathon yateguwe na Mastercard twigezeho igihembo hamwe na MedLink.',
+        FR: 'Participation en equipe au hackathon HATANA organise par Mastercard et gain d un prix avec MedLink.',
+      },
       issuer: 'Mastercard / University of Rwanda',
       year: '2025',
     },
     {
-      title: 'I Star Hackathon Participant',
-      description: 'Participated in I Star Hackathon and received certificate',
+      title: {
+        EN: 'I Star Hackathon Participant',
+        KINY: 'Umunyamuryango wa I Star Hackathon',
+        FR: 'Participant au Hackathon I Star',
+      },
+      description: {
+        EN: 'Participated in I Star Hackathon and received certificate',
+        KINY: 'Natanye muri I Star Hackathon maze nkagenerwa impamyabushobozi',
+        FR: 'Participation au Hackathon I Star avec obtention d un certificat',
+      },
       issuer: 'I Star Hackathon',
       year: '2024',
     },
     {
-      title: 'Cisco Cybersecurity Certificate',
-      description: 'Introduction to Cybersecurity - Cisco',
+      title: {
+        EN: 'Cisco Cybersecurity Certificate',
+        KINY: 'Impamyabushobozi ya Cisco mu Cyber Security',
+        FR: 'Certificat Cisco en Cybersecurite',
+      },
+      description: {
+        EN: 'Introduction to Cybersecurity - Cisco',
+        KINY: 'Intangiriro ya Cyber Security - Cisco',
+        FR: 'Introduction a la Cybersecurite - Cisco',
+      },
       issuer: 'Cisco',
       year: '2024',
     },
     {
-      title: 'FreeCodeCamp Responsive Web Design',
-      description: 'Certified in responsive web design',
+      title: {
+        EN: 'FreeCodeCamp Responsive Web Design',
+        KINY: 'Impamyabushobozi ya FreeCodeCamp mu Responsive Web Design',
+        FR: 'Responsive Web Design - FreeCodeCamp',
+      },
+      description: {
+        EN: 'Certified in responsive web design',
+        KINY: 'Negukanye impamyabushobozi mu responsive web design',
+        FR: 'Certifie en conception web responsive',
+      },
       issuer: 'freeCodeCamp',
       year: '2023',
     },
     {
-      title: 'Digital Marketing Certificate',
-      description: 'UniAthena certification in digital marketing',
+      title: {
+        EN: 'Digital Marketing Certificate',
+        KINY: 'Impamyabushobozi mu Digital Marketing',
+        FR: 'Certificat en Marketing Digital',
+      },
+      description: {
+        EN: 'UniAthena certification in digital marketing',
+        KINY: 'Impamyabushobozi ya UniAthena mu digital marketing',
+        FR: 'Certification UniAthena en marketing digital',
+      },
       issuer: 'UniAthena',
       year: '2024',
     },
     {
-      title: 'C# Fundamentals',
-      description: 'freeCodeCamp certification in C# basics',
+      title: {
+        EN: 'C# Fundamentals',
+        KINY: 'Impamyabushobozi mu Bikorwa bya C#',
+        FR: 'Fondamentaux C#',
+      },
+      description: {
+        EN: 'freeCodeCamp certification in C# basics',
+        KINY: 'Impamyabushobozi ya freeCodeCamp mu bikorwa bya C#',
+        FR: 'Certification freeCodeCamp en bases de C#',
+      },
       issuer: 'freeCodeCamp',
       year: '2023',
     },
@@ -782,17 +860,29 @@ export const portfolioData = {
   ],
   gallery: [
     {
-      title: 'I Star Hackathon Certificate Moment',
+      title: {
+        EN: 'I Star Hackathon Certificate Moment',
+        KINY: 'Igihe cy Impamyabushobozi ya I Star Hackathon',
+        FR: 'Moment du Certificat Hackathon I Star',
+      },
       image: '/Olivier_istar_hackton_cerificate.jpeg',
       category: 'Hackathons',
     },
     {
-      title: 'Coding Session with Team',
+      title: {
+        EN: 'Coding Session with Team',
+        KINY: 'Igihe cyo Gukora Code hamwe n Itsinda',
+        FR: 'Session de Codage en Equipe',
+      },
       image: '/coding_session.jpeg',
       category: 'Projects',
     },
     {
-      title: 'Portfolio Profile Event Shot',
+      title: {
+        EN: 'Portfolio Profile Event Shot',
+        KINY: 'Ifoto yo mu Birori bya Portfolio',
+        FR: 'Photo lors d un Evenement Portfolio',
+      },
       image: '/olivier_image.jpeg',
       category: 'Events',
     },
@@ -803,7 +893,11 @@ export const portfolioData = {
     data: ['PostgreSQL/MySQL', 'Feature extraction', 'Model inference', 'Monitoring insights'],
   },
   vision: {
-    statement: 'My vision is to build intelligent and scalable systems that transform industries in Africa and beyond.',
+    statement: {
+      EN: 'My vision is to build intelligent and scalable systems that transform industries in Africa and beyond.',
+      KINY: 'Intego yanjye ni ukubaka sisitemu zifite ubwenge, zishobora kwaguka, kandi zihinduye ubukungu bwa Afrika n isi yose.',
+      FR: 'Ma vision est de construire des systemes intelligents et evolutifs qui transforment les industries en Afrique et au-dela.',
+    },
   },
 }
 
@@ -826,7 +920,9 @@ export const labels = Object.fromEntries(
       projectsLabel: i18n[lang].hero.projectsLabel,
       systemsLabel: i18n[lang].hero.systemsLabel,
       certificatesLabel: i18n[lang].hero.certificatesLabel,
-      heroHeadline: portfolioData.personal.headline,
+      heroHeadline: i18n[lang].hero.headline,
+      availableForWork: i18n[lang].hero.availableForWork,
+      visionStatement: portfolioData.vision.statement[lang],
       roleLines: i18n[lang].hero.roleLines,
     },
   ]),

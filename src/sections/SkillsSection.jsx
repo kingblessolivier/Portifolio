@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import SectionReveal from '../components/SectionReveal'
 import TiltCard from '../components/TiltCard'
 import { skills } from '../assets/data'
 
+/* ── Animated Radar Chart ────────────────────────────── */
 function RadarChart({ title, points }) {
   const size = 240
   const center = size / 2
@@ -17,29 +18,131 @@ function RadarChart({ title, points }) {
       ...point,
       x: center + Math.cos(angle) * valueRadius,
       y: center + Math.sin(angle) * valueRadius,
-      lx: center + Math.cos(angle) * (radius + 22),
-      ly: center + Math.sin(angle) * (radius + 22),
+      lx: center + Math.cos(angle) * (radius + 24),
+      ly: center + Math.sin(angle) * (radius + 24),
+      gx: center + Math.cos(angle) * radius,
+      gy: center + Math.sin(angle) * radius,
     }
   })
 
-  const polygon = coordinates.map((point) => `${point.x},${point.y}`).join(' ')
+  const polygon = coordinates.map((p) => `${p.x},${p.y}`).join(' ')
+  const outerPolygon = coordinates.map((p) => `${p.gx},${p.gy}`).join(' ')
 
   return (
-    <div className="card-surface rounded-2xl p-6">
+    <div className="card-surface card-shimmer rounded-2xl p-6">
       <p className="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">{title}</p>
       <svg viewBox={`0 0 ${size} ${size}`} className="mx-auto h-64 w-64">
-        <circle cx={center} cy={center} r={radius} fill="none" stroke="var(--border)" strokeDasharray="4 4" />
-        <polygon points={polygon} fill="color-mix(in srgb, var(--accent) 28%, transparent)" stroke="var(--accent)" strokeWidth="2" />
-        {coordinates.map((point) => (
-          <g key={point.label}>
-            <circle cx={point.x} cy={point.y} r="4" fill="var(--accent)" />
-            <text x={point.lx} y={point.ly} textAnchor="middle" className="fill-[var(--text-muted)] text-[10px]">
-              {point.label}
+        {/* Background rings */}
+        {[0.25, 0.5, 0.75, 1].map((scale) => (
+          <circle
+            key={scale}
+            cx={center}
+            cy={center}
+            r={radius * scale}
+            fill="none"
+            stroke="var(--border)"
+            strokeDasharray={scale === 1 ? '4 4' : '2 4'}
+            strokeWidth={scale === 1 ? 1.2 : 0.8}
+          />
+        ))}
+
+        {/* Spoke lines */}
+        {coordinates.map((p) => (
+          <line
+            key={`spoke-${p.label}`}
+            x1={center}
+            y1={center}
+            x2={p.gx}
+            y2={p.gy}
+            stroke="var(--border)"
+            strokeWidth="0.8"
+          />
+        ))}
+
+        {/* Filled area — animate clip */}
+        <motion.polygon
+          points={polygon}
+          fill="color-mix(in srgb, var(--accent) 22%, transparent)"
+          stroke="var(--accent)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+          initial={{ scale: 0, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          style={{ transformOrigin: `${center}px ${center}px` }}
+        />
+
+        {/* Data point dots with glow */}
+        {coordinates.map((p, i) => (
+          <motion.g
+            key={p.label}
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.35, delay: 0.5 + i * 0.07 }}
+            style={{ transformOrigin: `${p.x}px ${p.y}px` }}
+          >
+            {/* Glow ring */}
+            <circle cx={p.x} cy={p.y} r="6" fill="color-mix(in srgb, var(--accent) 20%, transparent)" />
+            <circle cx={p.x} cy={p.y} r="3.5" fill="var(--accent)" />
+            <text
+              x={p.lx}
+              y={p.ly}
+              textAnchor="middle"
+              dominantBaseline="central"
+              className="fill-[var(--text-muted)]"
+              fontSize="9"
+              fontWeight="600"
+            >
+              {p.label}
             </text>
-          </g>
+          </motion.g>
         ))}
       </svg>
     </div>
+  )
+}
+
+/* ── Skill progress bar ──────────────────────────────── */
+function SkillBar({ skill, category, index }) {
+  const hue = skill.level >= 80 ? 'var(--accent)' : skill.level >= 60 ? 'var(--accent)' : 'var(--accent-purple)'
+
+  return (
+    <motion.div
+      key={`${category}-${skill.name}`}
+      initial={{ opacity: 0, x: -12 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.04 }}
+    >
+      <div className="mb-1.5 flex items-center justify-between text-xs text-[var(--text-muted)]">
+        <span className="font-medium text-[var(--text)]">{skill.name}</span>
+        <motion.span
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 + index * 0.04 }}
+          className="font-semibold"
+          style={{ color: hue }}
+        >
+          {skill.level}%
+        </motion.span>
+      </div>
+      <div className="progress-track h-2 rounded-full bg-[var(--surface)]">
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: `${skill.level}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.65, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
+          className="progress-fill h-full rounded-full"
+          style={{
+            background: `linear-gradient(90deg, var(--accent), var(--accent-purple))`,
+            boxShadow: `0 0 10px -3px color-mix(in srgb, var(--accent) 55%, transparent)`,
+          }}
+        />
+      </div>
+    </motion.div>
   )
 }
 
@@ -57,11 +160,7 @@ export default function SkillsSection({ navLabels, sectionText }) {
   const activeSkills = useMemo(() => {
     const selected = entries.find(([category]) => category === activeCategory)?.[1] ?? []
     const byName = selected.filter((item) => item.name.toLowerCase().includes(query.trim().toLowerCase()))
-
-    return [...byName].sort((a, b) => {
-      if (sortMode === 'asc') return a.level - b.level
-      return b.level - a.level
-    })
+    return [...byName].sort((a, b) => sortMode === 'asc' ? a.level - b.level : b.level - a.level)
   }, [entries, activeCategory, query, sortMode])
 
   return (
@@ -69,7 +168,7 @@ export default function SkillsSection({ navLabels, sectionText }) {
       <div className="container-shell">
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="mb-3 text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">{sectionText.skills.sectionTag}</p>
+            <span className="section-tag mb-3 block w-fit">{sectionText.skills.sectionTag}</span>
             <h2 className="section-title text-3xl font-bold sm:text-4xl">{navLabels.skills}</h2>
           </div>
         </div>
@@ -78,78 +177,73 @@ export default function SkillsSection({ navLabels, sectionText }) {
           <RadarChart title={sectionText.skills.radarTitle} points={radarPoints} />
 
           <div className="card-surface rounded-2xl p-6">
-            <div className="mb-4 flex flex-wrap gap-2">
+            {/* Category tabs */}
+            <div className="mb-5 flex flex-wrap gap-2">
               {entries.map(([category]) => (
-                <button
+                <motion.button
                   key={category}
                   onClick={() => setActiveCategory(category)}
-                  className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                  whileTap={{ scale: 0.95 }}
+                  className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
                     activeCategory === category
-                      ? 'border-[var(--accent)] bg-[color:color-mix(in_srgb,var(--accent)_18%,transparent)] text-[var(--text)]'
-                      : 'border-[var(--border)] text-[var(--text-muted)]'
+                      ? 'border-[var(--accent)] bg-[color:color-mix(in_srgb,var(--accent)_16%,transparent)] text-[var(--text)]'
+                      : 'border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--accent)] hover:text-[var(--text)]'
                   }`}
                 >
                   {category}
-                </button>
+                </motion.button>
               ))}
             </div>
 
-            <div className="mb-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+            {/* Search + sort */}
+            <div className="mb-5 grid gap-3 sm:grid-cols-[1fr_auto]">
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={sectionText.skills.searchPlaceholder}
-                className="rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm outline-none"
+                className="rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[color:color-mix(in_srgb,var(--accent)_25%,transparent)]"
               />
               <button
                 onClick={() => setSortMode((prev) => (prev === 'desc' ? 'asc' : 'desc'))}
-                className="rounded-xl border border-[var(--border)] px-3 py-2 text-xs font-semibold text-[var(--text-muted)]"
+                className="rounded-xl border border-[var(--border)] px-3 py-2 text-xs font-semibold text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:text-[var(--text)]"
               >
                 {sectionText.skills.sortLabel}: {sortMode === 'desc' ? sectionText.skills.highToLow : sectionText.skills.lowToHigh}
               </button>
             </div>
 
-            <div className="space-y-3">
-              {activeSkills.map((skill) => (
-                <motion.div key={`${activeCategory}-${skill.name}`} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-                  <div className="mb-1 flex items-center justify-between text-xs text-[var(--text-muted)]">
-                    <span>{skill.name}</span>
-                    <span>{skill.level}%</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-[var(--surface)]">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${skill.level}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.45 }}
-                      className="h-full rounded-full bg-[var(--accent)]"
-                    />
-                  </div>
-                </motion.div>
+            <div className="space-y-3.5">
+              {activeSkills.map((skill, index) => (
+                <SkillBar key={`${activeCategory}-${skill.name}`} skill={skill} category={activeCategory} index={index} />
               ))}
-              {activeSkills.length === 0 && <p className="text-xs text-[var(--text-muted)]">{sectionText.skills.noMatch}</p>}
+              {activeSkills.length === 0 && (
+                <p className="text-xs text-[var(--text-muted)]">{sectionText.skills.noMatch}</p>
+              )}
             </div>
           </div>
         </div>
 
+        {/* Category cards grid */}
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {entries.map(([category, list], index) => (
             <motion.div
               key={category}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: index * 0.05 }}
-              className=""
+              transition={{ duration: 0.5, delay: index * 0.06 }}
             >
-              <TiltCard className="card-surface rounded-2xl p-6">
-                <h3 className="mb-5 text-lg font-semibold">{category}</h3>
-
+              <TiltCard className="card-surface card-shimmer rounded-2xl p-6 transition hover:shadow-[0_20px_52px_-28px_rgba(59,130,246,0.35)]">
+                <div className="mb-5 flex items-center justify-between">
+                  <h3 className="text-base font-semibold">{category}</h3>
+                  <span className="rounded-full border border-[var(--border)] px-2 py-0.5 text-[10px] text-[var(--text-muted)]">
+                    {list.length} skills
+                  </span>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {list.map((skill) => (
                     <span
                       key={`${category}-${skill.name}`}
-                      className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1 text-xs text-[var(--text-muted)]"
+                      className="skill-tag cursor-default rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1 text-xs text-[var(--text-muted)]"
                     >
                       {skill.name}
                     </span>
