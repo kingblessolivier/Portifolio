@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react'
 import { animate } from 'framer-motion'
 import { FiEye } from 'react-icons/fi'
 
-const COUNTER_NAMESPACE = 'nsengimana-olivier-portfolio'
-const COUNTER_KEY = 'visitors'
-const VISITOR_FLAG_KEY = 'portfolio_visitor_counted_v1'
+const STORAGE_KEY = 'portfolio_visit_count_v2'
+const SESSION_KEY = 'portfolio_visit_counted_session'
 
 export default function VisitCounter({ label }) {
   const [count, setCount] = useState(0)
@@ -12,42 +11,25 @@ export default function VisitCounter({ label }) {
   useEffect(() => {
     let controls
 
-    const animateCount = (target) => {
-      controls = animate(0, target, {
-        duration: 0.9,
-        onUpdate(value) {
-          setCount(Math.floor(value))
-        },
-      })
+    // Read stored total
+    const stored = Number(localStorage.getItem(STORAGE_KEY) || '0')
+
+    // Only increment once per browser session (tab open)
+    const alreadyCountedThisSession = sessionStorage.getItem(SESSION_KEY) === 'true'
+    const newCount = alreadyCountedThisSession ? stored : stored + 1
+
+    if (!alreadyCountedThisSession) {
+      localStorage.setItem(STORAGE_KEY, String(newCount))
+      sessionStorage.setItem(SESSION_KEY, 'true')
     }
 
-    const syncVisitorCount = async () => {
-      try {
-        const alreadyCounted = localStorage.getItem(VISITOR_FLAG_KEY) === 'true'
-        const endpoint = alreadyCounted
-          ? `https://api.countapi.xyz/get/${COUNTER_NAMESPACE}/${COUNTER_KEY}`
-          : `https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/${COUNTER_KEY}`
-
-        const response = await fetch(endpoint)
-        if (!response.ok) {
-          throw new Error('Failed to load visitor count')
-        }
-
-        const payload = await response.json()
-        const value = typeof payload.value === 'number' ? payload.value : 0
-        animateCount(value)
-
-        if (!alreadyCounted) {
-          localStorage.setItem(VISITOR_FLAG_KEY, 'true')
-        }
-      } catch {
-        const fallback = Number(localStorage.getItem('portfolio_local_visit_count') || '1')
-        localStorage.setItem('portfolio_local_visit_count', String(fallback))
-        animateCount(fallback)
-      }
-    }
-
-    syncVisitorCount()
+    controls = animate(0, newCount, {
+      duration: 1.2,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate(value) {
+        setCount(Math.floor(value))
+      },
+    })
 
     return () => controls?.stop()
   }, [])
