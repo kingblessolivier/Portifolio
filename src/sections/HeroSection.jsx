@@ -4,6 +4,8 @@ import { FiArrowDown, FiMapPin } from 'react-icons/fi'
 import { personalInfo, portfolioData } from '../assets/data'
 import ParticleCanvas from '../components/ParticleCanvas'
 import MagneticButton from '../components/MagneticButton'
+import TerminalWidget from '../components/TerminalWidget'
+import TechMarquee from '../components/TechMarquee'
 
 /* ── Count-up hook ───────────────────────────── */
 function useCountUp(target, duration = 1200, start = false) {
@@ -101,9 +103,10 @@ export default function HeroSection({ labels }) {
 
       {/* ── Floating ambient orbs ── */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="orb-float-1 absolute -left-20 top-24 h-64 w-64 rounded-full bg-[color:color-mix(in_srgb,var(--accent)_14%,transparent)] blur-3xl" />
-        <div className="orb-float-2 absolute -right-16 top-36 h-72 w-72 rounded-full bg-[color:color-mix(in_srgb,var(--accent-purple)_12%,transparent)] blur-3xl" />
-        <div className="orb-float-3 absolute bottom-28 left-1/3 h-56 w-56 rounded-full bg-[color:color-mix(in_srgb,#10b981_8%,transparent)] blur-3xl" />
+        <div className="orb-float-1 absolute -left-24 top-16  h-[28rem] w-[28rem] rounded-full bg-[color:color-mix(in_srgb,var(--accent)_18%,transparent)] blur-[80px]" />
+        <div className="orb-float-2 absolute -right-20 top-24 h-[32rem] w-[32rem] rounded-full bg-[color:color-mix(in_srgb,var(--accent-purple)_16%,transparent)] blur-[90px]" />
+        <div className="orb-float-3 absolute bottom-16 left-1/3 h-[22rem] w-[22rem] rounded-full bg-[color:color-mix(in_srgb,#06b6d4_12%,transparent)] blur-[70px]" />
+        <div className="orb-float-4 absolute right-1/4 top-1/2 h-[18rem] w-[18rem] rounded-full bg-[color:color-mix(in_srgb,#10b981_8%,transparent)] blur-[60px]" />
       </div>
 
       <div className="container-shell relative z-10 grid items-center gap-10 py-20 lg:grid-cols-2">
@@ -204,120 +207,96 @@ export default function HeroSection({ labels }) {
           </div>
         </div>
 
-        {/* ── Right column — photo ── */}
-        <div className="relative hidden min-h-[480px] lg:block">
+        {/* ── Right column — photo + terminal ── */}
+        <div className="relative hidden lg:flex lg:flex-col lg:gap-5 lg:items-center">
 
-          {/* Radial glow blob behind photo */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="absolute left-1/2 top-1/2 h-96 w-80 -translate-x-1/2 -translate-y-1/2"
-            style={{
-              background: 'radial-gradient(ellipse at 30% 30%, color-mix(in srgb, var(--accent) 42%, transparent), transparent 60%), radial-gradient(ellipse at 70% 70%, color-mix(in srgb, var(--accent-purple) 38%, transparent), transparent 60%)',
-              filter: 'blur(3px)',
-              borderRadius: '60% 40% 55% 45% / 50% 60% 40% 50%',
-            }}
-          />
-
-          {/* Rotating conic gradient border — outer ring */}
-          <div
-            className="conic-border absolute left-1/2 top-1/2 h-[27rem] w-[21rem] -translate-x-1/2 -translate-y-1/2 rounded-[2.5rem]"
-            aria-hidden="true"
-          />
-
-          {/* Slow counter-rotate ring */}
-          <motion.div
-            animate={{ rotate: -360 }}
-            transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
-            className="absolute left-1/2 top-1/2 h-[30rem] w-[23rem] -translate-x-1/2 -translate-y-1/2 rounded-[3.5rem]"
-            style={{ border: '1px solid color-mix(in srgb, var(--accent-purple) 14%, var(--border))' }}
-          />
-
-          {/* Dashed orbit ring */}
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-            className="absolute left-1/2 top-1/2 h-[23rem] w-[23rem] -translate-x-1/2 -translate-y-1/2 rounded-full"
-            style={{ border: '1px dashed color-mix(in srgb, var(--accent) 24%, var(--border))' }}
-          />
-
-          {/* Profile photo */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
-            className="profile-frame card-surface absolute left-1/2 top-1/2 h-[24.5rem] w-[18.5rem] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[2.4rem]"
-          >
-            <img
-              src={heroPhoto}
-              alt="NSENGIMANA Olivier"
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-              sizes="288px"
-              className="hero-clean-image h-full w-full object-cover"
-            />
-            {/* Photo inner glow overlay */}
-            <div
-              className="pointer-events-none absolute inset-0 rounded-[inherit]"
+          {/* Photo card */}
+          <div className="relative w-fit">
+            {/* Radial glow blob */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="absolute left-1/2 top-1/2 h-80 w-64 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
               style={{
-                background: 'linear-gradient(180deg, transparent 55%, color-mix(in srgb, var(--accent) 18%, transparent) 100%)',
+                background: 'radial-gradient(ellipse at 30% 30%, color-mix(in srgb, var(--accent) 42%, transparent), transparent 60%), radial-gradient(ellipse at 70% 70%, color-mix(in srgb, var(--accent-purple) 38%, transparent), transparent 60%)',
+                filter: 'blur(3px)',
+                borderRadius: '60% 40% 55% 45% / 50% 60% 40% 50%',
               }}
             />
-          </motion.div>
 
-          {/* Floating card — Core focus */}
-          <motion.div
-            animate={{ y: [-8, 8, -8] }}
-            transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="card-surface absolute -right-4 top-8 z-20 w-[210px] overflow-hidden rounded-3xl border border-white/10 bg-[color:color-mix(in_srgb,var(--bg)_75%,transparent)] p-4 backdrop-blur-md"
-            style={{ boxShadow: '0 20px 48px -18px rgba(59,130,246,0.3)' }}
-          >
+            {/* Rotating conic gradient border */}
             <div
-              className="mb-2 h-0.5 w-8 rounded-full"
-              style={{ background: 'linear-gradient(90deg, var(--accent), transparent)' }}
+              className="conic-border absolute left-1/2 top-1/2 h-[20rem] w-[16rem] -translate-x-1/2 -translate-y-1/2 rounded-[2.5rem]"
+              aria-hidden="true"
             />
-            <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-muted)]">{labels.coreFocusLabel}</p>
-            <p className="mt-1.5 text-sm font-semibold leading-5 text-[var(--text)]">{labels.coreFocusValue}</p>
-          </motion.div>
 
-          {/* Floating card — Vision */}
-          <motion.div
-            animate={{ y: [10, -8, 10] }}
-            transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="card-surface absolute -left-6 bottom-10 z-20 w-[300px] overflow-hidden rounded-3xl border border-white/10 bg-[color:color-mix(in_srgb,var(--bg)_75%,transparent)] p-4 backdrop-blur-md"
-            style={{ boxShadow: '0 20px 48px -18px rgba(139,92,246,0.28)' }}
-          >
-            <div
-              className="mb-2 h-0.5 w-8 rounded-full"
-              style={{ background: 'linear-gradient(90deg, var(--accent-purple), transparent)' }}
+            {/* Dashed orbit ring */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              className="absolute left-1/2 top-1/2 h-[18rem] w-[18rem] -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+              style={{ border: '1px dashed color-mix(in srgb, var(--accent) 24%, var(--border))' }}
             />
-            <p className="text-[10px] uppercase tracking-[0.24em] text-[var(--text-muted)]">{labels.visionLabel}</p>
-            <p className="mt-1.5 text-sm font-medium leading-6 text-[var(--text)]">{labels.visionStatement}</p>
-          </motion.div>
 
-          {/* Available badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, delay: 1.0, type: 'spring', stiffness: 280 }}
-            className="absolute -right-2 bottom-28 z-20 flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg)] px-3 py-1.5 text-xs font-medium backdrop-blur"
-          >
-            <span
-              className="h-2 w-2 rounded-full bg-[var(--success)]"
-              style={{ boxShadow: '0 0 8px var(--success)' }}
-            />
-            {labels.availableForWork}
-          </motion.div>
+            {/* Profile photo */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="profile-frame card-surface relative z-10 h-[18rem] w-[14rem] overflow-hidden rounded-[2rem]"
+            >
+              <img
+                src={heroPhoto}
+                alt="NSENGIMANA Olivier"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                sizes="224px"
+                className="hero-clean-image h-full w-full object-cover"
+              />
+              <div
+                className="pointer-events-none absolute inset-0 rounded-[inherit]"
+                style={{
+                  background: 'linear-gradient(180deg, transparent 55%, color-mix(in srgb, var(--accent) 18%, transparent) 100%)',
+                }}
+              />
+            </motion.div>
+
+            {/* Floating card — Core focus */}
+            <motion.div
+              animate={{ y: [-6, 6, -6] }}
+              transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="card-surface absolute -right-16 top-4 z-20 w-[170px] overflow-hidden rounded-2xl border border-white/10 bg-[color:color-mix(in_srgb,var(--bg)_75%,transparent)] p-3.5 backdrop-blur-md"
+              style={{ boxShadow: '0 20px 48px -18px rgba(59,130,246,0.3)' }}
+            >
+              <div className="mb-1.5 h-0.5 w-6 rounded-full" style={{ background: 'linear-gradient(90deg, var(--accent), transparent)' }} />
+              <p className="text-[9px] uppercase tracking-[0.22em] text-[var(--text-muted)]">{labels.coreFocusLabel}</p>
+              <p className="mt-1 text-xs font-semibold leading-5 text-[var(--text)]">{labels.coreFocusValue}</p>
+            </motion.div>
+
+            {/* Available badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 1.0, type: 'spring', stiffness: 280 }}
+              className="absolute -left-4 bottom-6 z-20 flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg)] px-3 py-1.5 text-xs font-medium backdrop-blur"
+            >
+              <span className="h-2 w-2 rounded-full bg-[var(--success)] pulse-dot" style={{ boxShadow: '0 0 8px var(--success)' }} />
+              {labels.availableForWork}
+            </motion.div>
+          </div>
+
+          {/* ── Terminal widget ── */}
+          <TerminalWidget className="w-full max-w-[420px]" />
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="scroll-indicator">
-        <span className="text-[10px] uppercase tracking-widest text-[var(--text-muted)]">Scroll</span>
-        <FiArrowDown size={13} className="text-[var(--accent)]" />
+      {/* ── Tech marquee banner ── */}
+      <div className="absolute bottom-16 left-0 right-0">
+        <TechMarquee />
       </div>
+
     </section>
   )
 }

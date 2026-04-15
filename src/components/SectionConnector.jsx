@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 
 export default function SectionConnector() {
   return (
-    <div className="pointer-events-none relative z-10 mx-auto flex h-28 w-full max-w-[1200px] items-center justify-center">
+    <div className="pointer-events-none relative z-10 mx-auto flex h-12 w-full max-w-[1200px] items-center justify-center">
 
       {/* Left branch line */}
       <motion.div
@@ -49,17 +49,17 @@ export default function SectionConnector() {
         viewport={{ once: true, amount: 0.8 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         style={{ transformOrigin: 'top center' }}
-        className="connector-line relative h-20 w-px"
+        className="connector-line relative h-8 w-px"
       >
         {/* Primary traveling dot */}
         <motion.span
-          animate={{ y: [0, 52, 0] }}
+          animate={{ y: [0, 20, 0] }}
           transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
           className="connector-dot absolute left-1/2 top-0 h-2.5 w-2.5 -translate-x-1/2 rounded-full"
         />
         {/* Secondary traveling dot (opposite phase) */}
         <motion.span
-          animate={{ y: [52, 0, 52] }}
+          animate={{ y: [20, 0, 20] }}
           transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 1.6 }}
           className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full opacity-50"
           style={{
