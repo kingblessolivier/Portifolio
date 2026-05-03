@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { FiCpu, FiGithub, FiGlobe } from 'react-icons/fi'
+import { FiCpu, FiGithub, FiGlobe, FiArrowUpRight } from 'react-icons/fi'
 import { HiXMark } from 'react-icons/hi2'
 import SectionReveal from '../components/SectionReveal'
+import SectionHeader from '../components/SectionHeader'
 import TiltCard from '../components/TiltCard'
 import { projects } from '../assets/data'
 
@@ -50,72 +51,83 @@ export default function ProjectsSection({ navLabels, language, sectionText }) {
   return (
     <SectionReveal id="projects" className="section-gap">
       <div className="container-shell">
-        <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <span className="section-tag mb-3 block w-fit">{text.sectionTag}</span>
-            <h2 className="section-title text-3xl font-bold sm:text-4xl">{navLabels.projects}</h2>
-          </div>
-          <p className="max-w-xl text-sm leading-7 text-[var(--text-muted)]">{text.intro}</p>
+        <div className="mb-2 flex flex-wrap items-start justify-between gap-6">
+          <SectionHeader tag={text.sectionTag} title={navLabels.projects} subtitle={text.intro} />
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, index) => (
             <motion.article
               key={project.name}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.07 }}
-              whileHover={{ y: -8 }}
+              transition={{ duration: 0.5, delay: index * 0.06 }}
             >
-              <SpotlightCard className="card-surface card-shimmer h-full rounded-2xl">
-                <TiltCard className="relative z-10 h-full rounded-2xl p-6 transition hover:shadow-[0_24px_60px_-30px_rgba(59,130,246,0.42)]">
-                  <div className="mb-2 flex items-center justify-between gap-3">
-                    <h3 className="text-base font-semibold">{project.name}</h3>
-                    <span className="shrink-0 rounded-full border border-[var(--border)] px-2.5 py-1 text-[10px] uppercase tracking-wide text-[var(--text-muted)]">
-                      <span className="inline-flex items-center gap-1">
-                        {categoryIcon(project.category)}
-                        {project.category}
-                      </span>
+              <SpotlightCard className="card-surface card-shimmer group h-full rounded-2xl border border-[var(--border)] transition-all duration-300 hover:-translate-y-2 hover:border-[color:color-mix(in_srgb,var(--accent)_30%,var(--border))] hover:shadow-[0_24px_60px_-24px_color-mix(in_srgb,var(--accent)_30%,rgba(0,0,0,0.2))]">
+                <TiltCard className="relative z-10 flex h-full flex-col rounded-2xl p-6">
+
+                  {/* Project number watermark */}
+                  <span className="project-number">{String(index + 1).padStart(2, '0')}</span>
+
+                  {/* Top row */}
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide"
+                      style={{
+                        background: project.category === 'AI'
+                          ? 'color-mix(in srgb, var(--accent-purple) 14%, transparent)'
+                          : 'color-mix(in srgb, var(--accent) 12%, transparent)',
+                        color: project.category === 'AI' ? 'var(--accent-purple)' : 'var(--accent)',
+                        border: `1px solid ${project.category === 'AI' ? 'color-mix(in srgb,var(--accent-purple) 25%,transparent)' : 'color-mix(in srgb,var(--accent) 22%,transparent)'}`,
+                      }}
+                    >
+                      {categoryIcon(project.category)}
+                      {project.category}
                     </span>
+
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                    >
+                      <FiGithub size={13} />
+                    </a>
                   </div>
 
-                  <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
+                  {/* Title */}
+                  <h3 className="mb-3 text-base font-bold leading-snug text-[var(--text)]">{project.name}</h3>
+
+                  {/* Description */}
+                  <p className="flex-1 text-sm leading-[1.8] text-[var(--text-muted)]">
                     {project.description[language]}
                   </p>
 
-                  <div className="mt-5 flex flex-wrap gap-2">
+                  {/* Tech tags */}
+                  <div className="mt-5 flex flex-wrap gap-1.5">
                     {project.tech.map((tag) => (
                       <span
                         key={`${project.name}-${tag}`}
-                        className="skill-tag rounded-full border border-[var(--border)] px-3 py-1 text-xs text-[var(--text-muted)]"
+                        className="rounded-md border border-[var(--border)] bg-[var(--surface)] px-2.5 py-0.5 text-[10px] font-medium text-[var(--text-muted)] transition hover:border-[color:color-mix(in_srgb,var(--accent)_40%,var(--border))] hover:text-[var(--text)]"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
 
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full bg-[var(--surface)] px-4 py-2 text-sm font-medium transition hover:scale-105 hover:bg-[color:color-mix(in_srgb,var(--accent)_12%,var(--surface))]"
-                    >
-                      <FiGithub size={13} />
-                      {text.github}
-                    </a>
-                    <button
-                      onClick={() => setActiveProject(project)}
-                      className="inline-flex items-center rounded-full border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:text-[var(--text)]"
-                    >
-                      {text.viewCaseStudy}
-                    </button>
-                  </div>
+                  {/* Case study button */}
+                  <button
+                    onClick={() => setActiveProject(project)}
+                    className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--border)] py-2.5 text-xs font-semibold text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:bg-[color:color-mix(in_srgb,var(--accent)_8%,transparent)] hover:text-[var(--text)]"
+                  >
+                    {text.viewCaseStudy}
+                    <FiArrowUpRight size={13} />
+                  </button>
 
-                  {/* Bottom gradient accent */}
+                  {/* Bottom glow line on hover */}
                   <div
-                    className="absolute inset-x-0 bottom-0 h-0.5 rounded-b-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    className="absolute inset-x-0 bottom-0 h-[2px] rounded-b-2xl opacity-0 transition-all duration-300 group-hover:opacity-100"
                     style={{ background: 'linear-gradient(90deg, var(--accent), var(--accent-purple))' }}
                   />
                 </TiltCard>

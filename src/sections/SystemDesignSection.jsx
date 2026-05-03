@@ -1,39 +1,40 @@
 import { motion } from 'framer-motion'
-import { FiDatabase, FiLayers, FiMonitor, FiArrowRight } from 'react-icons/fi'
+import { FiDatabase, FiLayers, FiMonitor, FiArrowRight, FiZap } from 'react-icons/fi'
 import SectionReveal from '../components/SectionReveal'
+import SectionHeader from '../components/SectionHeader'
 
-const layerColors = {
-  0: { accent: 'var(--accent)', bg: 'color-mix(in srgb, var(--accent) 10%, var(--surface))' },
-  1: { accent: 'var(--accent-purple)', bg: 'color-mix(in srgb, var(--accent-purple) 10%, var(--surface))' },
-  2: { accent: '#10b981', bg: 'color-mix(in srgb, #10b981 10%, var(--surface))' },
-}
+const LAYER_CONFIG = [
+  { icon: FiMonitor,  colorIdx: 0, accent: 'var(--accent)',         bg: 'color-mix(in srgb,var(--accent) 10%,var(--surface))',         border: 'color-mix(in srgb,var(--accent) 22%,var(--border))' },
+  { icon: FiLayers,   colorIdx: 1, accent: 'var(--accent-purple)',  bg: 'color-mix(in srgb,var(--accent-purple) 10%,var(--surface))',  border: 'color-mix(in srgb,var(--accent-purple) 22%,var(--border))' },
+  { icon: FiDatabase, colorIdx: 2, accent: '#10b981',               bg: 'color-mix(in srgb,#10b981 10%,var(--surface))',               border: 'color-mix(in srgb,#10b981 22%,var(--border))' },
+]
 
-function LayerCard({ title, items, delay, icon, colorIndex }) {
-  const colors = layerColors[colorIndex] ?? layerColors[0]
-
+function LayerCard({ title, items, delay, config }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 22 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
-      whileHover={{ y: -6 }}
-      className="card-surface card-shimmer rounded-2xl p-6"
+      className="card-surface card-hover relative overflow-hidden rounded-2xl border border-[var(--border)] p-6"
     >
+      {/* Accent top bar */}
+      <div className="absolute inset-x-0 top-0 h-[2px] rounded-t-2xl" style={{ background: `linear-gradient(90deg,${config.accent},transparent)` }} />
+
+      {/* Icon */}
       <div
-        className="mb-4 inline-flex rounded-xl p-2.5 text-xl"
-        style={{ background: colors.bg, color: colors.accent, border: `1px solid color-mix(in srgb, ${colors.accent} 20%, var(--border))` }}
+        className="mb-5 inline-flex rounded-xl p-3 text-xl"
+        style={{ background: config.bg, color: config.accent, border: `1px solid ${config.border}` }}
       >
-        {icon}
+        <config.icon />
       </div>
-      <h3 className="text-base font-semibold">{title}</h3>
-      <ul className="mt-4 space-y-2">
+
+      <h3 className="mb-4 text-base font-bold text-[var(--text)]">{title}</h3>
+
+      <ul className="space-y-2.5">
         {items.map((item) => (
-          <li key={item} className="flex items-start gap-2 text-sm text-[var(--text-muted)]">
-            <span
-              className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
-              style={{ background: colors.accent }}
-            />
+          <li key={item} className="flex items-center gap-2.5 text-sm text-[var(--text-muted)]">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: config.accent }} />
             {item}
           </li>
         ))}
@@ -43,56 +44,81 @@ function LayerCard({ title, items, delay, icon, colorIndex }) {
 }
 
 export default function SystemDesignSection({ sectionText }) {
-  const systemText = sectionText.systems
+  const t = sectionText.systems
 
   return (
     <SectionReveal id="systems" className="section-gap">
       <div className="container-shell">
-        <div className="mb-10 max-w-3xl">
-          <span className="section-tag mb-3 block w-fit">Architecture</span>
-          <h2 className="section-title text-3xl font-bold sm:text-4xl">{systemText.title}</h2>
-          <p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">{systemText.subtitle}</p>
-        </div>
+        <SectionHeader
+          tag="Architecture"
+          title={t.title}
+          subtitle={t.subtitle}
+        />
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          <LayerCard title={systemText.frontend} items={systemText.frontendItems} delay={0.02} icon={<FiMonitor />} colorIndex={0} />
-          <LayerCard title={systemText.backend} items={systemText.backendItems} delay={0.08} icon={<FiLayers />} colorIndex={1} />
-          <LayerCard title={systemText.data} items={systemText.dataItems} delay={0.14} icon={<FiDatabase />} colorIndex={2} />
+        {/* Layer cards */}
+        <div className="mb-6 grid gap-5 lg:grid-cols-3">
+          {[
+            { title: t.frontend, items: t.frontendItems },
+            { title: t.backend,  items: t.backendItems  },
+            { title: t.data,     items: t.dataItems     },
+          ].map(({ title, items }, i) => (
+            <LayerCard key={title} title={title} items={items} delay={i * 0.07} config={LAYER_CONFIG[i]} />
+          ))}
         </div>
 
         {/* Flow diagram */}
-        <div className="card-surface mt-6 rounded-2xl p-6">
-          <p className="mb-1 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">{systemText.flowTitle}</p>
-          <div
-            className="mb-5 h-0.5 w-12 rounded-full"
-            style={{ background: 'linear-gradient(90deg, var(--accent), transparent)' }}
-          />
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {systemText.flow.map((step, index) => (
-              <motion.div
-                key={step}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.38, delay: index * 0.07 }}
-                className="relative rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-center text-sm transition hover:border-[color:color-mix(in_srgb,var(--accent)_40%,var(--border))]"
-              >
-                <p
-                  className="text-[10px] font-bold uppercase tracking-wide"
-                  style={{ color: 'var(--accent)' }}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="card-surface overflow-hidden rounded-2xl border border-[var(--border)] p-6"
+        >
+          <div className="mb-5 flex items-center gap-3">
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
+              style={{ background: 'linear-gradient(135deg,var(--accent),var(--accent-purple))' }}
+            >
+              <FiZap size={14} />
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--text-muted)]">{t.flowTitle}</p>
+              <p className="text-sm font-bold text-[var(--text)]">Request → Response lifecycle</p>
+            </div>
+          </div>
+
+          {/* Steps row */}
+          <div className="flex items-center gap-2">
+            {t.flow.map((step, i) => (
+              <>
+                <motion.div
+                  key={step}
+                  initial={{ opacity: 0, scale: 0.88 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.35, delay: 0.3 + i * 0.08 }}
+                  className="flow-step flex-1"
                 >
-                  Step {index + 1}
-                </p>
-                <p className="mt-1 font-medium">{step}</p>
-                {index < systemText.flow.length - 1 && (
-                  <span className="absolute -right-2.5 top-1/2 hidden -translate-y-1/2 rounded-full border border-[var(--border)] bg-[var(--bg)] p-1 text-[var(--text-muted)] lg:inline-flex">
-                    <FiArrowRight size={11} />
-                  </span>
+                  <span className="flow-step-num">{t.stepLabel} {i + 1}</span>
+                  <span className="text-[11px] font-semibold leading-tight text-[var(--text)]">{step}</span>
+                </motion.div>
+
+                {i < t.flow.length - 1 && (
+                  <motion.div
+                    key={`arr-${i}`}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: 0.4 + i * 0.08 }}
+                    className="hidden shrink-0 text-[var(--text-muted)] lg:block"
+                  >
+                    <FiArrowRight size={14} />
+                  </motion.div>
                 )}
-              </motion.div>
+              </>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </SectionReveal>
   )

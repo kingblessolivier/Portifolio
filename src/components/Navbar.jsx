@@ -1,211 +1,253 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import CommandPalette from './CommandPalette'
-import { FiGlobe } from 'react-icons/fi'
-import { HiBars3BottomRight, HiXMark } from 'react-icons/hi2'
-import { MdDarkMode, MdLightMode } from 'react-icons/md'
+import {
+  FiHome, FiUser, FiFolder, FiCpu, FiZap,
+  FiAward, FiImage, FiBriefcase, FiMail, FiGlobe,
+  FiSun, FiMoon, FiX, FiMenu,
+} from 'react-icons/fi'
 
-const sectionIds = ['home', 'about', 'projects', 'systems', 'skills', 'awards', 'gallery', 'work', 'contact']
+const NAV_ITEMS = [
+  { id: 'home',     icon: FiHome },
+  { id: 'about',    icon: FiUser },
+  { id: 'projects', icon: FiFolder },
+  { id: 'systems',  icon: FiCpu },
+  { id: 'skills',   icon: FiZap },
+  { id: 'awards',   icon: FiAward },
+  { id: 'gallery',  icon: FiImage },
+  { id: 'work',     icon: FiBriefcase },
+  { id: 'contact',  icon: FiMail },
+]
 
 export default function Navbar({ navLabels, language, setLanguage, toggleTheme, theme }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen]               = useState(false)
   const [activeSection, setActiveSection] = useState('home')
-  const [isShrunk, setIsShrunk] = useState(false)
+  const [scrolled, setScrolled]       = useState(false)
 
+  /* ── Shrink on scroll ── */
   useEffect(() => {
-    const onScroll = () => setIsShrunk(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
+    const handle = () => setScrolled(window.scrollY > 20)
+    handle()
+    window.addEventListener('scroll', handle, { passive: true })
+    return () => window.removeEventListener('scroll', handle)
   }, [])
 
+  /* ── Active section tracker ── */
   useEffect(() => {
-    const observers = sectionIds
-      .map((id) => document.getElementById(id))
+    const observers = NAV_ITEMS
+      .map(({ id }) => document.getElementById(id))
       .filter(Boolean)
-      .map((element) => {
-        const observer = new IntersectionObserver(
-          ([entry]) => { if (entry.isIntersecting) setActiveSection(entry.target.id) },
-          { threshold: 0.4 },
+      .map((el) => {
+        const obs = new IntersectionObserver(
+          ([entry]) => { if (entry.isIntersecting) setActiveSection(el.id) },
+          { threshold: 0.35 },
         )
-        observer.observe(element)
-        return observer
+        obs.observe(el)
+        return obs
       })
     return () => observers.forEach((o) => o.disconnect())
   }, [])
 
   const scrollTo = (id) => {
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      setOpen(false)
-    }
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    setOpen(false)
   }
 
-  const sectionLabelMap = {
-    home: navLabels.home,
-    about: navLabels.about,
-    projects: navLabels.projects,
-    systems: navLabels.systems,
-    skills: navLabels.skills,
-    awards: navLabels.awards,
-    gallery: navLabels.gallery,
-    work: navLabels.work,
-    contact: navLabels.contact,
-  }
+  const labelOf = (id) => navLabels[id] ?? id
 
   return (
-    <header
-      className={`glass-nav fixed inset-x-0 top-0 z-50 border-b border-[var(--border)] transition-all duration-300 ${
-        isShrunk ? 'shadow-[0_10px_40px_-24px_rgba(0,0,0,0.45)]' : ''
-      }`}
-    >
-      <div className={`container-shell flex items-center justify-between transition-all duration-300 ${isShrunk ? 'h-12' : 'h-14'}`}>
-        {/* Brand */}
-        <button
-          onClick={() => scrollTo('home')}
-          className="group flex items-center gap-2 text-base font-bold tracking-tight"
-          aria-label="Go to home"
-        >
-          <span
-            className="flex h-6 w-6 items-center justify-center rounded-full transition group-hover:scale-110"
-            style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-purple))' }}
-          >
-            <span className="h-2 w-2 rounded-full bg-white" />
-          </span>
-          <span>Olivier</span>
-        </button>
+    <>
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'navbar-glass navbar-border shadow-[0_8px_32px_-16px_rgba(0,0,0,0.4)]'
+            : 'bg-transparent'
+        }`}
+      >
+        <div className={`container-shell flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-13' : 'h-16'}`}>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-1 xl:flex">
-          {sectionIds.map((id) => (
-            <button
-              key={id}
-              onClick={() => scrollTo(id)}
-              className={`relative rounded-full px-3 py-1.5 text-xs font-medium transition ${
-                activeSection === id ? 'text-[var(--text)]' : 'text-[var(--text-muted)] hover:text-[var(--text)]'
-              }`}
-            >
-              {activeSection === id && (
-                <motion.span
-                  layoutId="nav-pill"
-                  className="nav-active-pill absolute inset-0 rounded-full"
-                  style={{ zIndex: -1 }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                />
-              )}
-              {sectionLabelMap[id]}
-            </button>
-          ))}
-        </nav>
-
-        {/* Desktop controls */}
-        <div className="hidden items-center gap-2 xl:flex">
-          <div className="hidden 2xl:block">
-            <CommandPalette
-              navLabels={navLabels}
-              onNavigate={scrollTo}
-              theme={theme}
-              toggleTheme={toggleTheme}
-              language={language}
-              setLanguage={setLanguage}
-            />
-          </div>
-
-          <div className="card-surface flex items-center gap-1 overflow-hidden rounded-full p-1 text-xs font-semibold">
-            <FiGlobe className="ml-1.5 text-[var(--text-muted)]" size={13} />
-            {['EN', 'KINY', 'FR'].map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setLanguage(lang)}
-                className={`rounded-full px-2.5 py-1 transition ${
-                  language === lang ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-muted)] hover:text-[var(--text)]'
-                }`}
-              >
-                {lang}
-              </button>
-            ))}
-          </div>
-
+          {/* ── Logo ── */}
           <button
-            onClick={toggleTheme}
-            className="card-surface rounded-full p-2 text-lg transition hover:scale-105"
-            aria-label="Toggle theme"
+            onClick={() => scrollTo('home')}
+            aria-label="Home"
+            className="group flex items-center gap-2.5"
           >
-            {theme === 'dark' ? <MdLightMode /> : <MdDarkMode />}
+            {/* Badge */}
+            <div className="navbar-logo-badge">
+              <span className="navbar-logo-text">N</span>
+              <span className="navbar-logo-dot" />
+            </div>
+            {/* Name */}
+            <div className="leading-none">
+              <span className="block text-[13px] font-black tracking-tight text-[var(--text)] transition group-hover:text-[var(--accent)]">
+                Olivier
+              </span>
+              <span className="block text-[9px] uppercase tracking-[0.25em] text-[var(--text-muted)]">
+                portfolio
+              </span>
+            </div>
+          </button>
+
+          {/* ── Desktop nav ── */}
+          <nav className="hidden items-center gap-0.5 xl:flex" role="navigation">
+            {NAV_ITEMS.map(({ id, icon: Icon }) => {
+              const active = activeSection === id
+              return (
+                <button
+                  key={id}
+                  onClick={() => scrollTo(id)}
+                  className={`navbar-link ${active ? 'navbar-link--active' : ''}`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="navbar-pill"
+                      className="navbar-pill"
+                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                  <Icon size={12} className="relative z-10 flex-shrink-0" />
+                  <span className="relative z-10">{labelOf(id)}</span>
+                </button>
+              )
+            })}
+          </nav>
+
+          {/* ── Desktop controls ── */}
+          <div className="hidden items-center gap-2 xl:flex">
+            {/* Command palette */}
+            <div className="hidden 2xl:block">
+              <CommandPalette
+                navLabels={navLabels}
+                onNavigate={scrollTo}
+                theme={theme}
+                toggleTheme={toggleTheme}
+                language={language}
+                setLanguage={setLanguage}
+              />
+            </div>
+
+            {/* Language switcher */}
+            <div className="navbar-lang-switcher">
+              <FiGlobe size={11} className="text-[var(--text-muted)]" />
+              {['EN', 'KINY', 'FR'].map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => setLanguage(lang)}
+                  className={`navbar-lang-btn ${language === lang ? 'navbar-lang-btn--active' : ''}`}
+                >
+                  {lang}
+                </button>
+              ))}
+            </div>
+
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              className="navbar-theme-btn"
+            >
+              <motion.span
+                key={theme}
+                initial={{ rotate: -30, opacity: 0, scale: 0.7 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                exit={{ rotate: 30, opacity: 0, scale: 0.7 }}
+                transition={{ duration: 0.22 }}
+                className="flex items-center justify-center"
+              >
+                {theme === 'dark' ? <FiSun size={15} /> : <FiMoon size={15} />}
+              </motion.span>
+            </button>
+          </div>
+
+          {/* ── Mobile hamburger ── */}
+          <button
+            onClick={() => setOpen((p) => !p)}
+            aria-label="Toggle menu"
+            className="navbar-hamburger xl:hidden"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={open ? 'x' : 'menu'}
+                initial={{ rotate: -20, opacity: 0 }}
+                animate={{ rotate: 0,   opacity: 1 }}
+                exit={{   rotate:  20, opacity: 0 }}
+                transition={{ duration: 0.18 }}
+                className="flex items-center justify-center"
+              >
+                {open ? <FiX size={20} /> : <FiMenu size={20} />}
+              </motion.span>
+            </AnimatePresence>
           </button>
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setOpen((prev) => !prev)}
-          className="card-surface rounded-lg p-2 text-xl xl:hidden"
-          aria-label="Toggle menu"
-        >
-          {open ? <HiXMark /> : <HiBars3BottomRight />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden border-t border-[var(--border)]"
-          >
-            <div className="container-shell space-y-1 py-3">
-              {sectionIds.map((id, index) => (
-                <motion.button
-                  key={id}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2, delay: index * 0.03 }}
-                  onClick={() => scrollTo(id)}
-                  className={`block w-full rounded-xl px-3 py-2.5 text-left text-sm transition ${
-                    activeSection === id
-                      ? 'bg-[color:color-mix(in_srgb,var(--accent)_14%,transparent)] text-[var(--text)]'
-                      : 'text-[var(--text-muted)] hover:bg-[var(--surface)] hover:text-[var(--text)]'
-                  }`}
-                >
-                  {activeSection === id && (
-                    <span
-                      className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)]"
-                      style={{ boxShadow: '0 0 6px var(--accent)' }}
-                    />
-                  )}
-                  {sectionLabelMap[id]}
-                </motion.button>
-              ))}
-
-              <div className="flex items-center justify-between gap-3 pt-2 pb-1">
-                <div className="card-surface flex overflow-hidden rounded-full p-1 text-xs font-semibold">
-                  {['EN', 'KINY', 'FR'].map((lang) => (
-                    <button
-                      key={lang}
-                      onClick={() => setLanguage(lang)}
-                      className={`rounded-full px-3 py-1.5 transition ${
-                        language === lang ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-muted)]'
-                      }`}
-                    >
-                      {lang}
-                    </button>
-                  ))}
+        {/* ── Mobile menu ── */}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1,  y: 0 }}
+              exit={{   opacity: 0,  y: -12 }}
+              transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+              className="mobile-menu-panel overflow-hidden border-t border-[var(--border)]"
+            >
+              <div className="container-shell py-4">
+                {/* Nav items */}
+                <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+                  {NAV_ITEMS.map(({ id, icon: Icon }, i) => {
+                    const active = activeSection === id
+                    return (
+                      <motion.button
+                        key={id}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.18, delay: i * 0.025 }}
+                        onClick={() => scrollTo(id)}
+                        className={`mobile-nav-item ${active ? 'mobile-nav-item--active' : ''}`}
+                      >
+                        <span className={`mobile-nav-icon ${active ? 'mobile-nav-icon--active' : ''}`}>
+                          <Icon size={14} />
+                        </span>
+                        <span className="text-sm font-medium">{labelOf(id)}</span>
+                        {active && (
+                          <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[var(--accent)]"
+                            style={{ boxShadow: '0 0 6px var(--accent)' }} />
+                        )}
+                      </motion.button>
+                    )
+                  })}
                 </div>
-                <button
-                  onClick={toggleTheme}
-                  className="card-surface rounded-full p-2 text-xl"
-                  aria-label="Toggle theme"
+
+                {/* Bottom controls */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.22 }}
+                  className="mt-4 flex items-center justify-between border-t border-[var(--border)] pt-3"
                 >
-                  {theme === 'dark' ? <MdLightMode /> : <MdDarkMode />}
-                </button>
+                  {/* Language */}
+                  <div className="navbar-lang-switcher">
+                    <FiGlobe size={11} className="text-[var(--text-muted)]" />
+                    {['EN', 'KINY', 'FR'].map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => setLanguage(lang)}
+                        className={`navbar-lang-btn ${language === lang ? 'navbar-lang-btn--active' : ''}`}
+                      >
+                        {lang}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Theme */}
+                  <button onClick={toggleTheme} className="navbar-theme-btn" aria-label="Toggle theme">
+                    {theme === 'dark' ? <FiSun size={15} /> : <FiMoon size={15} />}
+                  </button>
+                </motion.div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+    </>
   )
 }

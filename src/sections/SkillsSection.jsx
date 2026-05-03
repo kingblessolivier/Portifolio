@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import SectionReveal from '../components/SectionReveal'
 import TiltCard from '../components/TiltCard'
+import GitHubHeatmap from '../components/GitHubHeatmap'
 import { skills } from '../assets/data'
 
 /* ── Animated Radar Chart ────────────────────────────── */
@@ -220,6 +221,11 @@ export default function SkillsSection({ navLabels, sectionText }) {
               )}
             </div>
           </div>
+        </div>
+
+        {/* GitHub heatmap */}
+        <div className="mb-6">
+          <GitHubHeatmap />
         </div>
 
         {/* Category cards grid */}

@@ -14,6 +14,7 @@ import GallerySection from './sections/GallerySection'
 import ContactSection from './sections/ContactSection'
 import Footer from './sections/Footer'
 import { labels, uiContent } from './assets/data'
+import CursorTrail from './components/CursorTrail'
 
 function getInitialTheme() {
   const stored = localStorage.getItem('theme')
@@ -37,6 +38,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
+      <CursorTrail />
       <ScrollProgress />
 
       {/* ── Ambient background orbs (fixed, full-page) ── */}

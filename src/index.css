@@ -13,6 +13,13 @@
   --success: #10b981;
   --shadow: 0 16px 42px -26px rgba(15, 23, 42, 0.22);
 
+  /* GitHub heatmap levels */
+  --heatmap-0: #e5e7eb;
+  --heatmap-1: color-mix(in srgb, var(--accent) 25%, transparent);
+  --heatmap-2: color-mix(in srgb, var(--accent) 48%, transparent);
+  --heatmap-3: color-mix(in srgb, var(--accent) 72%, transparent);
+  --heatmap-4: var(--accent);
+
   /* Terminal colors (light) */
   --terminal-bg: #1e1e2e;
   --terminal-bar: #2a2a3e;
@@ -38,6 +45,13 @@
   --accent-purple: #a78bfa;
   --success: #34d399;
   --shadow: 0 24px 60px -28px rgba(0, 0, 20, 0.8);
+
+  /* GitHub heatmap levels (dark) */
+  --heatmap-0: #1e2035;
+  --heatmap-1: color-mix(in srgb, var(--accent) 28%, transparent);
+  --heatmap-2: color-mix(in srgb, var(--accent) 52%, transparent);
+  --heatmap-3: color-mix(in srgb, var(--accent) 76%, transparent);
+  --heatmap-4: var(--accent);
 
   /* Terminal colors (dark — even richer) */
   --terminal-bg: #13131f;
@@ -168,6 +182,21 @@ textarea:focus-visible {
   100% { background-position: 28px 28px, 56px 56px, 56px 56px; }
 }
 
+/* ─── Hero stat metric cards ──────────────────── */
+.hero-stat-card {
+  position: relative;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.hero-stat-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  box-shadow: 0 8px 28px -12px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
 /* Scroll-down indicator */
 .scroll-indicator {
   position: absolute;
@@ -191,6 +220,100 @@ textarea:focus-visible {
 .section-title {
   font-family: 'Sora', sans-serif;
   letter-spacing: -0.03em;
+}
+
+/* Bold section header used by SectionHeader component */
+.section-header-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--text);
+}
+
+/* Project number watermark */
+.project-number {
+  position: absolute;
+  top: -0.1em;
+  right: 0.3rem;
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: var(--text);
+  opacity: 0.04;
+  pointer-events: none;
+  font-family: 'Sora', sans-serif;
+  user-select: none;
+}
+
+/* Award rank badge */
+.award-rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  font-family: 'Sora', sans-serif;
+}
+
+/* Stat divider line on work/edu cards */
+.card-accent-line {
+  height: 100%;
+  width: 3px;
+  border-radius: 99px;
+  background: linear-gradient(to bottom, var(--accent), var(--accent-purple));
+  flex-shrink: 0;
+}
+
+/* Flow step item */
+.flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+  padding: 0.85rem 0.6rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+  text-align: center;
+}
+.flow-step:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  box-shadow: 0 6px 22px -10px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.flow-step-num {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.flow-connector {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text-muted);
+}
+
+/* Enhanced card hover */
+.card-hover {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+}
+.card-hover:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border)) !important;
+  box-shadow: 0 20px 50px -22px color-mix(in srgb, var(--accent) 32%, rgba(0,0,0,0.2));
 }
 
 /* Animated gradient heading */
@@ -267,10 +390,204 @@ textarea:focus-visible {
   box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--accent) 65%, transparent);
 }
 
-/* ─── Nav ──────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   NAVBAR — redesigned
+   ═══════════════════════════════════════════════════════ */
+
+.navbar-glass {
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+}
+.navbar-border {
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 8%, var(--border));
+}
+
+/* Logo badge */
+.navbar-logo-badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+  box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: box-shadow 0.25s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+.navbar-logo-badge:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px -4px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.navbar-logo-text {
+  font-size: 13px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-family: 'Sora', sans-serif;
+}
+.navbar-logo-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 1.5px solid var(--bg);
+  box-shadow: 0 0 6px var(--success);
+}
+
+/* Nav link */
+.navbar-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+.navbar-link:hover { color: var(--text); }
+.navbar-link--active { color: var(--text); font-weight: 600; }
+
+.navbar-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+  box-shadow: 0 0 12px -4px color-mix(in srgb, var(--accent) 30%, transparent);
+  z-index: 0;
+}
+
+/* Language switcher */
+.navbar-lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+}
+.navbar-lang-btn {
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+.navbar-lang-btn:hover { color: var(--text); }
+.navbar-lang-btn--active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px -2px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+/* Theme toggle */
+.navbar-theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  color: var(--text-muted);
+  transition: all 0.22s ease;
+  overflow: hidden;
+}
+.navbar-theme-btn:hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  box-shadow: 0 0 12px -4px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* Hamburger */
+.navbar-hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  color: var(--text-muted);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+.navbar-hamburger:hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+
+/* Mobile menu panel */
+.mobile-menu-panel {
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Mobile nav item */
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  text-align: left;
+}
+.mobile-nav-item:hover {
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  border-color: var(--border);
+  color: var(--text);
+}
+.mobile-nav-item--active {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 22%, var(--border));
+  color: var(--text);
+}
+
+/* Mobile nav icon */
+.mobile-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.mobile-nav-icon--active {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  color: var(--accent);
+  box-shadow: 0 0 10px -3px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* Keep old glass-nav for backward compat */
 .glass-nav {
-  background: color-mix(in srgb, var(--bg) 78%, transparent);
-  backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(20px) saturate(1.6);
 }
 
 /* ─── Misc Layout ──────────────────────────────── */
@@ -634,10 +951,11 @@ textarea:focus-visible {
   transform: translateY(-2px);
 }
 
-/* ─── Navbar active pill ───────────────────────── */
+/* ─── Navbar active pill (legacy alias) ─────────── */
 .nav-active-pill {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
-  box-shadow: 0 8px 20px -14px color-mix(in srgb, var(--accent) 65%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+  box-shadow: 0 0 12px -4px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 /* ─── Stat counter ─────────────────────────────── */
